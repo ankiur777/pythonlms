@@ -1,0 +1,23 @@
+services:
+  db:
+    ports: []
+    restart: unless-stopped
+  redis:
+    ports: []
+    restart: unless-stopped
+  backend:
+    build: { context: ./backend, target: production }
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile - --error-logfile -
+    volumes: []
+    restart: unless-stopped
+  worker:
+    build: { context: ./backend, target: production }
+    volumes: []
+    restart: unless-stopped
+  frontend:
+    build: { context: ./frontend, target: production }
+    command: nginx -g 'daemon off;'
+    volumes: []
+    ports: ["8080:80"]
+    restart: unless-stopped
+
